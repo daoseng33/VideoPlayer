@@ -6,6 +6,14 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		1CCFA4C72D87C8DD009C153D /* RxBlocking in Frameworks */ = {isa = PBXBuildFile; productRef = 1CCFA4C62D87C8DD009C153D /* RxBlocking */; };
+		1CCFA4C92D87C8DD009C153D /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = 1CCFA4C82D87C8DD009C153D /* RxCocoa */; };
+		1CCFA4CB2D87C8DD009C153D /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = 1CCFA4CA2D87C8DD009C153D /* RxRelay */; };
+		1CCFA4CE2D87C905009C153D /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 1CCFA4CD2D87C905009C153D /* SnapKit */; };
+		1CCFA4D12D87C94A009C153D /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = 1CCFA4D02D87C94A009C153D /* SFSafeSymbols */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		1C9DA30A2D841B39002A1564 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +60,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1CCFA4CE2D87C905009C153D /* SnapKit in Frameworks */,
+				1CCFA4CB2D87C8DD009C153D /* RxRelay in Frameworks */,
+				1CCFA4D12D87C94A009C153D /* SFSafeSymbols in Frameworks */,
+				1CCFA4C92D87C8DD009C153D /* RxCocoa in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -59,6 +71,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1CCFA4C72D87C8DD009C153D /* RxBlocking in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +125,10 @@
 			);
 			name = VideoPlayer;
 			packageProductDependencies = (
+				1CCFA4C82D87C8DD009C153D /* RxCocoa */,
+				1CCFA4CA2D87C8DD009C153D /* RxRelay */,
+				1CCFA4CD2D87C905009C153D /* SnapKit */,
+				1CCFA4D02D87C94A009C153D /* SFSafeSymbols */,
 			);
 			productName = VideoPlayer;
 			productReference = 1C9DA2F82D841B37002A1564 /* VideoPlayer.app */;
@@ -135,6 +152,7 @@
 			);
 			name = VideoPlayerTests;
 			packageProductDependencies = (
+				1CCFA4C62D87C8DD009C153D /* RxBlocking */,
 			);
 			productName = VideoPlayerTests;
 			productReference = 1C9DA3092D841B39002A1564 /* VideoPlayerTests.xctest */;
@@ -195,6 +213,11 @@
 			);
 			mainGroup = 1C9DA2EF2D841B37002A1564;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				1CCFA4C52D87C8DD009C153D /* XCRemoteSwiftPackageReference "RxSwift" */,
+				1CCFA4CC2D87C905009C153D /* XCRemoteSwiftPackageReference "SnapKit" */,
+				1CCFA4CF2D87C94A009C153D /* XCRemoteSwiftPackageReference "SFSafeSymbols" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 1C9DA2F92D841B37002A1564 /* Products */;
 			projectDirPath = "";
@@ -591,6 +614,61 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		1CCFA4C52D87C8DD009C153D /* XCRemoteSwiftPackageReference "RxSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ReactiveX/RxSwift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.9.0;
+			};
+		};
+		1CCFA4CC2D87C905009C153D /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.7.1;
+			};
+		};
+		1CCFA4CF2D87C94A009C153D /* XCRemoteSwiftPackageReference "SFSafeSymbols" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SFSafeSymbols/SFSafeSymbols.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.2.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		1CCFA4C62D87C8DD009C153D /* RxBlocking */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1CCFA4C52D87C8DD009C153D /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxBlocking;
+		};
+		1CCFA4C82D87C8DD009C153D /* RxCocoa */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1CCFA4C52D87C8DD009C153D /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxCocoa;
+		};
+		1CCFA4CA2D87C8DD009C153D /* RxRelay */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1CCFA4C52D87C8DD009C153D /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxRelay;
+		};
+		1CCFA4CD2D87C905009C153D /* SnapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1CCFA4CC2D87C905009C153D /* XCRemoteSwiftPackageReference "SnapKit" */;
+			productName = SnapKit;
+		};
+		1CCFA4D02D87C94A009C153D /* SFSafeSymbols */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1CCFA4CF2D87C94A009C153D /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
+			productName = SFSafeSymbols;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 1C9DA2F02D841B37002A1564 /* Project object */;
 }
