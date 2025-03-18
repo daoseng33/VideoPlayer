@@ -101,13 +101,13 @@ final class VideoPlayerView: UIView {
                     self.hideLoading()
                     if self.player.currentItem != nil {
                         self.showControlView()
-                        self.videoControlView.changePlayButtonStatus(isPlaying: false)
+                        self.videoControlView.isPlayingRelay.accept(false)
                     }
                     
                 case (.playing, _):
                     self.hideLoading()
-                    self.videoControlView.changePlayButtonStatus(isPlaying: true)
                     self.hideControlView()
+                    self.videoControlView.isPlayingRelay.accept(true)
                     
                 case (_, .failed):
                     self.hideLoading()
