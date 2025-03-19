@@ -8,14 +8,8 @@
 import UIKit
 import SnapKit
 import SFSafeSymbols
-import RxCocoa
 
 final class VideoControlView: UIView {
-    // MARK: - Properties
-    let isPlayingRelay: BehaviorRelay<Bool> = .init(value: false)
-    let isFullScreenRelay: BehaviorRelay<Bool> = .init(value: false)
-    let isMutedRelay: BehaviorRelay<Bool> = .init(value: false)
-    
     // MARK: - UI
     let playButton: UIButton = {
         let button = UIButton(type: .custom)
@@ -85,7 +79,6 @@ final class VideoControlView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
-        setupBinding()
     }
     
     required init?(coder: NSCoder) {
@@ -122,33 +115,7 @@ final class VideoControlView: UIView {
         }
     }
     
-    private func setupBinding() {
-        isPlayingRelay
-            .asDriver()
-            .drive(onNext: { [weak self] isPlaying in
-                guard let self else { return }
-                self.changePlayButtonStatus(isPlaying: isPlaying)
-            })
-            .disposed(by: rx.disposeBag)
-        
-        isMutedRelay
-            .asDriver()
-            .drive(onNext: { [weak self] isMuted in
-                guard let self else { return }
-                self.changeVolumeButtonStatus(isMuted: isMuted)
-            })
-            .disposed(by: rx.disposeBag)
-        
-        isFullScreenRelay
-            .asDriver()
-            .drive(onNext: { [weak self] isFullScreen in
-                guard let self else { return }
-                self.changeFullScreenStatus(isFullScreen: isFullScreen)
-            })
-            .disposed(by: rx.disposeBag)
-    }
-    
-    private func changePlayButtonStatus(isPlaying: Bool) {
+    func changePlayButtonStatus(isPlaying: Bool) {
         let symbolConfig = UIImage.SymbolConfiguration(pointSize: 44, weight: .regular)
         var image: UIImage!
         
@@ -161,7 +128,7 @@ final class VideoControlView: UIView {
         playButton.setImage(image, for: .normal)
     }
     
-    private func changeVolumeButtonStatus(isMuted: Bool) {
+    func changeVolumeButtonStatus(isMuted: Bool) {
         let symbolConfig = UIImage.SymbolConfiguration(pointSize: 25, weight: .regular)
         var image: UIImage!
         
@@ -174,7 +141,7 @@ final class VideoControlView: UIView {
         volumeButton.setImage(image, for: .normal)
     }
     
-    private func changeFullScreenStatus(isFullScreen: Bool) {
+    func changeFullScreenStatus(isFullScreen: Bool) {
         let symbolConfig = UIImage.SymbolConfiguration(pointSize: 25, weight: .regular)
         var image: UIImage!
         

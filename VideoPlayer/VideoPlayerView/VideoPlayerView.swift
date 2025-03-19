@@ -109,13 +109,13 @@ final class VideoPlayerView: UIView {
                     self.hideLoading()
                     if self.player.currentItem != nil {
                         self.showControlView()
-                        self.videoControlView.isPlayingRelay.accept(false)
+                        self.videoControlView.changePlayButtonStatus(isPlaying: false)
                     }
                     
                 case (.playing, _):
                     self.hideLoading()
                     self.startCountdown()
-                    self.videoControlView.isPlayingRelay.accept(true)
+                    self.videoControlView.changePlayButtonStatus(isPlaying: true)
                     
                 case (_, .failed):
                     self.hideLoading()
@@ -185,7 +185,7 @@ final class VideoPlayerView: UIView {
             .withUnretained(self)
             .subscribe { (self, _) in
                 self.player.isMuted.toggle()
-                self.videoControlView.isMutedRelay.accept(self.player.isMuted)
+                self.videoControlView.changeVolumeButtonStatus(isMuted: self.player.isMuted)
                 self.startCountdown()
             }
             .disposed(by: rx.disposeBag)
@@ -195,7 +195,7 @@ final class VideoPlayerView: UIView {
             .withUnretained(self)
             .subscribe { (self, _) in
                 self.isFullScreen.toggle()
-                self.videoControlView.isFullScreenRelay.accept(self.isFullScreen)
+                self.videoControlView.changeFullScreenStatus(isFullScreen: self.isFullScreen)
                 self.startCountdown()
             }
             .disposed(by: rx.disposeBag)
