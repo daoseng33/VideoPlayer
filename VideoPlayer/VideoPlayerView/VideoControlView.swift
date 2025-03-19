@@ -13,6 +13,7 @@ import RxCocoa
 final class VideoControlView: UIView {
     // MARK: - Properties
     let isPlayingRelay: BehaviorRelay<Bool> = .init(value: false)
+    let isFullScreenRelay: BehaviorRelay<Bool> = .init(value: false)
     let isMutedRelay: BehaviorRelay<Bool> = .init(value: false)
     
     // MARK: - UI
@@ -137,6 +138,14 @@ final class VideoControlView: UIView {
                 self.changeVolumeButtonStatus(isMuted: isMuted)
             })
             .disposed(by: rx.disposeBag)
+        
+        isFullScreenRelay
+            .asDriver()
+            .drive(onNext: { [weak self] isFullScreen in
+                guard let self else { return }
+                self.changeFullScreenStatus(isFullScreen: isFullScreen)
+            })
+            .disposed(by: rx.disposeBag)
     }
     
     private func changePlayButtonStatus(isPlaying: Bool) {
@@ -163,5 +172,18 @@ final class VideoControlView: UIView {
         }
         
         volumeButton.setImage(image, for: .normal)
+    }
+    
+    private func changeFullScreenStatus(isFullScreen: Bool) {
+        let symbolConfig = UIImage.SymbolConfiguration(pointSize: 25, weight: .regular)
+        var image: UIImage!
+        
+        if isFullScreen {
+            image = UIImage(systemSymbol: .arrowUpRightAndArrowDownLeftRectangleFill, withConfiguration: symbolConfig).withRenderingMode(.alwaysOriginal).withTintColor(.white)
+        } else {
+            image = UIImage(systemSymbol: .arrowDownLeftAndArrowUpRightRectangleFill, withConfiguration: symbolConfig).withRenderingMode(.alwaysOriginal).withTintColor(.white)
+        }
+        
+        fullScreenButton.setImage(image, for: .normal)
     }
 }

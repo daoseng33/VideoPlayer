@@ -23,6 +23,7 @@ final class VideoPlayerView: UIView {
     private var timeObserver: Any?
     
     private var isSliderBeingDragged = false
+    private var isFullScreen = false
     
     private let timeStatusRelay = BehaviorRelay<AVPlayer.TimeControlStatus>(value: .waitingToPlayAtSpecifiedRate)
     var timeStatus: AVPlayer.TimeControlStatus {
@@ -185,6 +186,16 @@ final class VideoPlayerView: UIView {
             .subscribe { (self, _) in
                 self.player.isMuted.toggle()
                 self.videoControlView.isMutedRelay.accept(self.player.isMuted)
+                self.startCountdown()
+            }
+            .disposed(by: rx.disposeBag)
+        
+        videoControlView.fullScreenButton.rx
+            .tap
+            .withUnretained(self)
+            .subscribe { (self, _) in
+                self.isFullScreen.toggle()
+                self.videoControlView.isFullScreenRelay.accept(self.isFullScreen)
                 self.startCountdown()
             }
             .disposed(by: rx.disposeBag)
