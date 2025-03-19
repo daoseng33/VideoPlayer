@@ -25,9 +25,8 @@ final class MainViewController: UIViewController {
     private func setupUI() {
         view.addSubview(videoPlayerView)
         videoPlayerView.snp.makeConstraints {
-            $0.center.equalToSuperview()
+            $0.top.left.right.equalToSuperview()
             $0.height.equalTo(360)
-            $0.left.right.equalToSuperview()
         }
     }
 }

@@ -22,6 +22,8 @@ final class VideoPlayerView: UIView {
     private let countdownSeconds = 3
     private var timeObserver: Any?
     
+    private var isSliderBeingDragged = false
+    
     private let timeStatusRelay = BehaviorRelay<AVPlayer.TimeControlStatus>(value: .waitingToPlayAtSpecifiedRate)
     var timeStatus: AVPlayer.TimeControlStatus {
         timeStatusRelay.value
@@ -111,7 +113,7 @@ final class VideoPlayerView: UIView {
                     
                 case (.playing, _):
                     self.hideLoading()
-                    self.hideControlView()
+                    self.startCountdown()
                     self.videoControlView.isPlayingRelay.accept(true)
                     
                 case (_, .failed):
@@ -133,6 +135,34 @@ final class VideoPlayerView: UIView {
         timeObserver = player.addPeriodicTimeObserver(forInterval: interval, queue: DispatchQueue.main) { [weak self] time in
             self?.updateTimeLabel(currentTime: time)
         }
+        
+        // Progress slider
+        videoControlView.progressSlider.rx.value
+            .skip(1)
+            .withUnretained(self)
+            .subscribe(onNext: { (self, value) in
+                guard self.isSliderBeingDragged else { return }
+                if let duration = self.player.currentItem?.duration {
+                    let totalSeconds = CMTimeGetSeconds(duration)
+                    let value = Float64(value) * totalSeconds
+                    let seekTime = CMTime(seconds: value, preferredTimescale: 600)
+                    self.player.seek(to: seekTime, toleranceBefore: .zero, toleranceAfter: .zero)
+                    self.startCountdown()
+                }
+            })
+            .disposed(by: rx.disposeBag)
+        
+        videoControlView.progressSlider.rx.controlEvent([.touchDown])
+            .subscribe(onNext: { [weak self] in
+                self?.isSliderBeingDragged = true
+            })
+            .disposed(by: rx.disposeBag)
+        
+        videoControlView.progressSlider.rx.controlEvent([.touchUpInside, .touchUpOutside])
+            .subscribe(onNext: { [weak self] in
+                self?.isSliderBeingDragged = false
+            })
+            .disposed(by: rx.disposeBag)
     }
     
     private func setupActions() {
@@ -142,10 +172,10 @@ final class VideoPlayerView: UIView {
             .subscribe { (self, _) in
                 if self.player.timeControlStatus == .playing {
                     self.pause()
-                    self.stopCountdown()
                 } else {
                     self.play()
                 }
+                self.startCountdown()
             }
             .disposed(by: rx.disposeBag)
         
@@ -155,7 +185,7 @@ final class VideoPlayerView: UIView {
             .subscribe { (self, _) in
                 self.player.isMuted.toggle()
                 self.videoControlView.isMutedRelay.accept(self.player.isMuted)
-                self.resetCountdown()
+                self.startCountdown()
             }
             .disposed(by: rx.disposeBag)
     }
@@ -240,11 +270,6 @@ final class VideoPlayerView: UIView {
         timerDisposable?.dispose()
     }
     
-    private func resetCountdown() {
-        stopCountdown()
-        startCountdown()
-    }
-    
     private func timerCompleted() {
         timerDisposable = nil
         hideControlView(withAnimation: true)
@@ -275,6 +300,10 @@ final class VideoPlayerView: UIView {
     private func updateTimeLabel(currentTime: CMTime) {
         let currentTimeInSeconds = CMTimeGetSeconds(currentTime)
         let duration = CMTimeGetSeconds(player.currentItem?.duration ?? CMTime.zero)
+        
+        if duration > 0, !isSliderBeingDragged {
+            videoControlView.progressSlider.value = Float(currentTimeInSeconds / duration)
+        }
         
         let currentTimeString = formatTime(seconds: currentTimeInSeconds)
         let durationString = formatTime(seconds: duration)
