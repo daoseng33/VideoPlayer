@@ -265,10 +265,6 @@ final class VideoPlayerView: UIView {
         stopCountdown()
         
         timerDisposable = Observable<Int>.timer(.seconds(0), period: .seconds(1), scheduler: MainScheduler.instance)
-            .map { [weak self] index -> Int in
-                guard let self else { return 0 }
-                return self.countdownSeconds - index
-            }
             .take(countdownSeconds + 1)
             .subscribe(
                 onCompleted: { [weak self] in

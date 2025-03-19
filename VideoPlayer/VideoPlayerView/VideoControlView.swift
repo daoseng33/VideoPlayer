@@ -115,6 +115,7 @@ final class VideoControlView: UIView {
         }
     }
     
+    // MARK: - Change button status
     func changePlayButtonStatus(isPlaying: Bool) {
         let symbolConfig = UIImage.SymbolConfiguration(pointSize: 44, weight: .regular)
         var image: UIImage!
