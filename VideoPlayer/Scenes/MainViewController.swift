@@ -18,7 +18,7 @@ final class MainViewController: UIViewController {
         super.viewDidLoad()
         
         setupUI()
-        videoPlayerView.loadVideo(from: URL(string: "https://v.redd.it/kkxwy09lsi1e1/DASH_1080.mp4")!)
+        videoPlayerView.loadVideo(from: URL(string: "https://videos.files.wordpress.com/YLhNpIDh/like-a-boss-ft.-seth-rogen-uncensored-version-1.mp4")!)
     }
     
     // MARK: - Setup

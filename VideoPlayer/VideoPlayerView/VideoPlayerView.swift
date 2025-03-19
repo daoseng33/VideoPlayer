@@ -138,6 +138,16 @@ final class VideoPlayerView: UIView {
                 }
             }
             .disposed(by: rx.disposeBag)
+        
+        videoControlView.volumeButton.rx
+            .tap
+            .withUnretained(self)
+            .subscribe { (self, _) in
+                self.player.isMuted.toggle()
+                self.videoControlView.isMutedRelay.accept(self.player.isMuted)
+                self.resetCountdown()
+            }
+            .disposed(by: rx.disposeBag)
     }
     
     override func layoutSubviews() {
@@ -205,7 +215,7 @@ final class VideoPlayerView: UIView {
         
         timerDisposable = Observable<Int>.timer(.seconds(0), period: .seconds(1), scheduler: MainScheduler.instance)
             .map { [weak self] index -> Int in
-                guard let self = self else { return 0 }
+                guard let self else { return 0 }
                 return self.countdownSeconds - index
             }
             .take(countdownSeconds + 1)

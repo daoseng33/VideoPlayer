@@ -13,6 +13,7 @@ import RxCocoa
 final class VideoControlView: UIView {
     // MARK: - Properties
     let isPlayingRelay: BehaviorRelay<Bool> = .init(value: false)
+    let isMutedRelay: BehaviorRelay<Bool> = .init(value: false)
     
     // MARK: - UI
     let playButton: UIButton = {
@@ -128,6 +129,14 @@ final class VideoControlView: UIView {
                 self.changePlayButtonStatus(isPlaying: isPlaying)
             })
             .disposed(by: rx.disposeBag)
+        
+        isMutedRelay
+            .asDriver()
+            .drive(onNext: { [weak self] isMuted in
+                guard let self else { return }
+                self.changeVolumeButtonStatus(isMuted: isMuted)
+            })
+            .disposed(by: rx.disposeBag)
     }
     
     private func changePlayButtonStatus(isPlaying: Bool) {
@@ -141,5 +150,18 @@ final class VideoControlView: UIView {
         }
         
         playButton.setImage(image, for: .normal)
+    }
+    
+    private func changeVolumeButtonStatus(isMuted: Bool) {
+        let symbolConfig = UIImage.SymbolConfiguration(pointSize: 25, weight: .regular)
+        var image: UIImage!
+        
+        if isMuted {
+            image = UIImage(systemSymbol: .speakerSlashFill, withConfiguration: symbolConfig).withRenderingMode(.alwaysOriginal).withTintColor(.white)
+        } else {
+            image = UIImage(systemSymbol: .speakerWave2Fill, withConfiguration: symbolConfig).withRenderingMode(.alwaysOriginal).withTintColor(.white)
+        }
+        
+        volumeButton.setImage(image, for: .normal)
     }
 }
