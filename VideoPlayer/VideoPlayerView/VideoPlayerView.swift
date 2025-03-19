@@ -20,6 +20,7 @@ final class VideoPlayerView: UIView {
     // Timer
     private var timerDisposable: Disposable?
     private let countdownSeconds = 3
+    private var timeObserver: Any?
     
     private let timeStatusRelay = BehaviorRelay<AVPlayer.TimeControlStatus>(value: .waitingToPlayAtSpecifiedRate)
     var timeStatus: AVPlayer.TimeControlStatus {
@@ -59,6 +60,10 @@ final class VideoPlayerView: UIView {
     
     deinit {
         stopCountdown()
+        
+        if let timeObserver = timeObserver {
+            player.removeTimeObserver(timeObserver)
+        }
     }
     
     // MARK: - Setup
@@ -123,6 +128,11 @@ final class VideoPlayerView: UIView {
                 
             })
             .disposed(by: playerBindingsDisposeBag)
+        
+        let interval = CMTime(seconds: 0.5, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
+        timeObserver = player.addPeriodicTimeObserver(forInterval: interval, queue: DispatchQueue.main) { [weak self] time in
+            self?.updateTimeLabel(currentTime: time)
+        }
     }
     
     private func setupActions() {
@@ -240,6 +250,7 @@ final class VideoPlayerView: UIView {
         hideControlView(withAnimation: true)
     }
     
+    // MARK: - Control panel interaction
     private func showControlView(withAnimation: Bool = false) {
         if withAnimation {
             UIView.animate(withDuration: 0.3) {
@@ -257,6 +268,29 @@ final class VideoPlayerView: UIView {
             }
         } else {
             videoControlView.alpha = 0
+        }
+    }
+    
+    // MARK: - Time label
+    private func updateTimeLabel(currentTime: CMTime) {
+        let currentTimeInSeconds = CMTimeGetSeconds(currentTime)
+        let duration = CMTimeGetSeconds(player.currentItem?.duration ?? CMTime.zero)
+        
+        let currentTimeString = formatTime(seconds: currentTimeInSeconds)
+        let durationString = formatTime(seconds: duration)
+        
+        videoControlView.timeLabel.text = "\(currentTimeString) / \(durationString)"
+    }
+    
+    private func formatTime(seconds: Double) -> String {
+        let hours = Int(seconds / 3600)
+        let minutes = Int(seconds.truncatingRemainder(dividingBy: 3600) / 60)
+        let seconds = Int(seconds.truncatingRemainder(dividingBy: 60))
+        
+        if hours > 0 {
+            return String(format: "%02d:%02d:%02d", hours, minutes, seconds)
+        } else {
+            return String(format: "%02d:%02d", minutes, seconds)
         }
     }
 }
