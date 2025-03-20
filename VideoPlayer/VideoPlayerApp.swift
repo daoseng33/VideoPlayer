@@ -12,6 +12,7 @@ struct VideoPlayerApp: App {
     var body: some Scene {
         WindowGroup {
             MainViewControllerRepresentable()
+                .ignoresSafeArea()
         }
     }
 }

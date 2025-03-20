@@ -13,6 +13,7 @@ import SnapKit
 
 final class VideoPlayerView: UIView {
     // MARK: - Properties
+    // Player
     private var playerLayer: AVPlayerLayer?
     private var player = AVPlayer()
     private var playerBindingsDisposeBag = DisposeBag()
@@ -23,7 +24,11 @@ final class VideoPlayerView: UIView {
     private var timeObserver: Any?
     
     private var isSliderBeingDragged = false
-    private var isFullScreen = false
+    // Full screen
+    let isFullScreenRelay = BehaviorRelay<Bool>(value: false)
+    var isFullScreen: Bool {
+        isFullScreenRelay.value
+    }
     
     private let timeStatusRelay = BehaviorRelay<AVPlayer.TimeControlStatus>(value: .waitingToPlayAtSpecifiedRate)
     var timeStatus: AVPlayer.TimeControlStatus {
@@ -43,10 +48,7 @@ final class VideoPlayerView: UIView {
         return indicator
     }()
     
-    private let videoControlView: VideoControlView = {
-        let view = VideoControlView()
-        return view
-    }()
+    private let videoControlView = VideoControlView()
     
     // MARK: - Init
     override init(frame: CGRect) {
@@ -109,13 +111,13 @@ final class VideoPlayerView: UIView {
                     self.hideLoading()
                     if self.player.currentItem != nil {
                         self.showControlView()
-                        self.videoControlView.changePlayButtonStatus(isPlaying: false)
+                        self.videoControlView.changePlayButtonMode(isPlaying: false)
                     }
                     
                 case (.playing, _):
                     self.hideLoading()
                     self.startCountdown()
-                    self.videoControlView.changePlayButtonStatus(isPlaying: true)
+                    self.videoControlView.changePlayButtonMode(isPlaying: true)
                     
                 case (_, .failed):
                     self.hideLoading()
@@ -186,7 +188,7 @@ final class VideoPlayerView: UIView {
             .withUnretained(self)
             .subscribe { (self, _) in
                 self.player.isMuted.toggle()
-                self.videoControlView.changeVolumeButtonStatus(isMuted: self.player.isMuted)
+                self.videoControlView.changeVolumeButtonMode(isMuted: self.player.isMuted)
                 self.startCountdown()
             }
             .disposed(by: rx.disposeBag)
@@ -195,8 +197,8 @@ final class VideoPlayerView: UIView {
             .tap
             .withUnretained(self)
             .subscribe { (self, _) in
-                self.isFullScreen.toggle()
-                self.videoControlView.changeFullScreenStatus(isFullScreen: self.isFullScreen)
+                self.isFullScreenRelay.accept(!self.isFullScreen)
+                self.changeFullScreenMode(isFullScreen: self.isFullScreen)
                 self.startCountdown()
             }
             .disposed(by: rx.disposeBag)
@@ -204,7 +206,7 @@ final class VideoPlayerView: UIView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        playerLayer?.frame = bounds
+        updateVideoLayerFrame()
     }
     
     // MARK: - Video player
@@ -238,11 +240,6 @@ final class VideoPlayerView: UIView {
         player.pause()
     }
     
-    func reset() {
-        pause()
-        hideControlView()
-    }
-    
     private func showLoading() {
         DispatchQueue.main.async {
             self.activityIndicator.startAnimating()
@@ -253,6 +250,14 @@ final class VideoPlayerView: UIView {
         DispatchQueue.main.async {
             self.activityIndicator.stopAnimating()
         }
+    }
+    
+    func updateVideoLayerFrame() {
+        playerLayer?.frame = bounds
+    }
+    
+    func changeFullScreenMode(isFullScreen: Bool) {
+        videoControlView.changeFullScreenMode(isFullScreen: isFullScreen)
     }
     
     // MARK: - Actions

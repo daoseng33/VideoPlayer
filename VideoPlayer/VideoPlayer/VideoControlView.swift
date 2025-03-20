@@ -116,7 +116,7 @@ final class VideoControlView: UIView {
     }
     
     // MARK: - Change button status
-    func changePlayButtonStatus(isPlaying: Bool) {
+    func changePlayButtonMode(isPlaying: Bool) {
         let symbolConfig = UIImage.SymbolConfiguration(pointSize: 44, weight: .regular)
         var image: UIImage!
         
@@ -129,7 +129,7 @@ final class VideoControlView: UIView {
         playButton.setImage(image, for: .normal)
     }
     
-    func changeVolumeButtonStatus(isMuted: Bool) {
+    func changeVolumeButtonMode(isMuted: Bool) {
         let symbolConfig = UIImage.SymbolConfiguration(pointSize: 25, weight: .regular)
         var image: UIImage!
         
@@ -142,7 +142,7 @@ final class VideoControlView: UIView {
         volumeButton.setImage(image, for: .normal)
     }
     
-    func changeFullScreenStatus(isFullScreen: Bool) {
+    func changeFullScreenMode(isFullScreen: Bool) {
         let symbolConfig = UIImage.SymbolConfiguration(pointSize: 25, weight: .regular)
         var image: UIImage!
         
