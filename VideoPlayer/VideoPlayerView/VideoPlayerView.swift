@@ -134,7 +134,8 @@ final class VideoPlayerView: UIView {
         
         let interval = CMTime(seconds: 0.5, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
         timeObserver = player.addPeriodicTimeObserver(forInterval: interval, queue: DispatchQueue.main) { [weak self] time in
-            self?.updateTimeLabel(currentTime: time)
+            guard let self = self, self.player.currentItem?.status == .readyToPlay else { return }
+            self.updateTimeLabel(currentTime: time)
         }
         
         // Progress slider
