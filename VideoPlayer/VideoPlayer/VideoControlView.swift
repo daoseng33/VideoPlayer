@@ -11,21 +11,30 @@ import SFSafeSymbols
 
 final class VideoControlView: UIView {
     // MARK: - UI
-    let playButton: UIButton = {
+    lazy var playButton: UIButton = {
         let button = UIButton(type: .custom)
         let symbolConfig = UIImage.SymbolConfiguration(pointSize: 44, weight: .regular)
         let image = UIImage(systemSymbol: .playCircle, withConfiguration: symbolConfig).withRenderingMode(.alwaysOriginal).withTintColor(.white)
         button.setImage(image, for: .normal)
-        
-        // Add shadow effect
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOffset = CGSize(width: 0, height: 2)
-        button.layer.shadowRadius = 1
-        button.layer.shadowOpacity = 0.5
-        
-        // Ensure shadow is visible if the image has transparent parts
-        button.layer.shouldRasterize = true
-        button.layer.rasterizationScale = UIScreen.main.scale
+        addShadow(to: button)
+        return button
+    }()
+    
+    lazy var goForwardButton: UIButton = {
+        let button = UIButton(type: .custom)
+        let symbolConfig = UIImage.SymbolConfiguration(pointSize: 32, weight: .regular)
+        let image = UIImage(systemSymbol: ._10ArrowTriangleheadClockwise, withConfiguration: symbolConfig).withRenderingMode(.alwaysOriginal).withTintColor(.white)
+        button.setImage(image, for: .normal)
+        addShadow(to: button)
+        return button
+    }()
+    
+    lazy var goBackwardButton: UIButton = {
+        let button = UIButton(type: .custom)
+        let symbolConfig = UIImage.SymbolConfiguration(pointSize: 32, weight: .regular)
+        let image = UIImage(systemSymbol: ._10ArrowTriangleheadCounterclockwise, withConfiguration: symbolConfig).withRenderingMode(.alwaysOriginal).withTintColor(.white)
+        button.setImage(image, for: .normal)
+        addShadow(to: button)
         return button
     }()
     
@@ -39,23 +48,25 @@ final class VideoControlView: UIView {
         return stackView
     }()
     
-    let volumeButton: UIButton = {
+    lazy var volumeButton: UIButton = {
         let button = UIButton(type: .custom)
         let symbolConfig = UIImage.SymbolConfiguration(pointSize: 25, weight: .regular)
         let image = UIImage(systemSymbol: .speakerWave2Fill, withConfiguration: symbolConfig).withRenderingMode(.alwaysOriginal).withTintColor(.white)
         button.setImage(image, for: .normal)
+        addShadow(to: button)
         return button
     }()
     
-    let fullScreenButton: UIButton = {
+    lazy var fullScreenButton: UIButton = {
         let button = UIButton(type: .custom)
         let symbolConfig = UIImage.SymbolConfiguration(pointSize: 25, weight: .regular)
         let image = UIImage(systemSymbol: .arrowDownLeftAndArrowUpRightRectangleFill, withConfiguration: symbolConfig).withRenderingMode(.alwaysOriginal).withTintColor(.white)
         button.setImage(image, for: .normal)
+        addShadow(to: button)
         return button
     }()
     
-    let progressSlider: UISlider = {
+    lazy var progressSlider: UISlider = {
         let slider = UISlider()
         slider.minimumTrackTintColor = .white
         slider.maximumTrackTintColor = .lightGray
@@ -63,15 +74,17 @@ final class VideoControlView: UIView {
         slider.minimumValue = 0
         slider.maximumValue = 1
         slider.value = 0
+        addShadow(to: slider)
         return slider
     }()
     
-    let timeLabel: UILabel = {
+    lazy var timeLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 16, weight: .medium)
         label.textColor = .white
         label.textAlignment = .left
         label.text = "00:00 / 00:00"
+        addShadow(to: label)
         return label
     }()
     
@@ -92,6 +105,18 @@ final class VideoControlView: UIView {
         addSubview(playButton)
         playButton.snp.makeConstraints {
             $0.edges.equalToSuperview()
+        }
+        
+        addSubview(goForwardButton)
+        goForwardButton.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.centerX.equalToSuperview().offset(70)
+        }
+        
+        addSubview(goBackwardButton)
+        goBackwardButton.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.centerX.equalToSuperview().offset(-70)
         }
         
         addSubview(stackView)
@@ -153,5 +178,17 @@ final class VideoControlView: UIView {
         }
         
         fullScreenButton.setImage(image, for: .normal)
+    }
+    
+    private func addShadow(to view: UIView) {
+        // Add shadow effect
+        view.layer.shadowColor = UIColor.black.cgColor
+        view.layer.shadowOffset = CGSize(width: 0, height: 2)
+        view.layer.shadowRadius = 1
+        view.layer.shadowOpacity = 0.5
+        
+        // Ensure shadow is visible if the image has transparent parts
+        view.layer.shouldRasterize = true
+        view.layer.rasterizationScale = UIScreen.main.scale
     }
 }

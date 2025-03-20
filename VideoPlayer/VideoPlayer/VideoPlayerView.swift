@@ -202,6 +202,24 @@ final class VideoPlayerView: UIView {
                 self.startCountdown()
             }
             .disposed(by: rx.disposeBag)
+        
+        videoControlView.goForwardButton.rx
+            .tap
+            .withUnretained(self)
+            .subscribe { (self, _) in
+                self.player.seek(to: CMTimeAdd(self.player.currentTime(), .init(seconds: 10, preferredTimescale: 1)), toleranceBefore: .zero, toleranceAfter: .zero)
+                self.startCountdown()
+            }
+            .disposed(by: rx.disposeBag)
+        
+        videoControlView.goBackwardButton.rx
+            .tap
+            .withUnretained(self)
+            .subscribe { (self, _) in
+                self.player.seek(to: CMTimeSubtract(self.player.currentTime(), .init(seconds: 10, preferredTimescale: 1)), toleranceBefore: .zero, toleranceAfter: .zero)
+                self.startCountdown()
+            }
+            .disposed(by: rx.disposeBag)
     }
     
     override func layoutSubviews() {
